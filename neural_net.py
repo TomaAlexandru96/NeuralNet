@@ -7,14 +7,13 @@ from random import shuffle
 class Net:
     weights = []
     biases = []
-    hidden_layers_nr = 1
-    neurons_per_layer = 5
-    nr_of_inputs = 2
-    nr_of_outputs = 1
-    batch_size = 10
 
-    def __init__(self):
-        pass
+    def __init__(self, hidden, neurons, inputs, outputs, batch):
+        self.hidden_layers_nr = hidden
+        self.neurons_per_layer = neurons
+        self.nr_of_inputs = inputs
+        self.nr_of_outputs = outputs
+        self.batch_size = batch
 
     def random_weights(self):
         self.init_random_weights()
