@@ -7,10 +7,10 @@ from random import shuffle
 class Net:
     weights = []
     biases = []
-    hidden_layers_nr = 2
-    neurons_per_layer = 30
-    nr_of_inputs = 7
-    nr_of_outputs = 3
+    hidden_layers_nr = 1
+    neurons_per_layer = 5
+    nr_of_inputs = 2
+    nr_of_outputs = 1
     batch_size = 10
 
     def __init__(self):
@@ -27,18 +27,22 @@ class Net:
 
     def init_random_weights(self):
         add_bias_weight = lambda l1, l2: (self.weights.append(tf.Variable(tf.random_normal([l1, l2]))), \
-                self.biases.append(tf.Variable(tf.random_normal([1, l2]))))
+                self.biases.append(tf.Variable(tf.random_normal([1, 1]))))
 
         add_bias_weight(self.nr_of_inputs, self.neurons_per_layer)
         for i in range(self.hidden_layers_nr-1):
             add_bias_weight(self.neurons_per_layer, self.neurons_per_layer)
         add_bias_weight(self.neurons_per_layer, self.nr_of_outputs)
 
+    def normalise(self, tensor):
+        return tf.divide(tensor, tf.norm(tensor))
+
     def init_propagate_step(self):
         self.input = tf.placeholder(tf.float32, [None, self.nr_of_inputs])
         self.output = tf.placeholder(tf.float32, [None, self.nr_of_outputs])
 
-        self.input = tf.nn.l2_normalize(self.input, 1)
+        self.input = self.normalise(self.input)
+        self.output = self.normalise(self.output)
 
         self.actual_out = self.input
 
@@ -60,22 +64,25 @@ class Net:
             mat_in = []
             mat_out = []
             for batch in range(i, min(len(training_set), i+self.batch_size)):
-                tokens = [float(x) for x in training_set[batch].split()]
-                mat_in.append(tokens[:self.nr_of_inputs])
-                mat_out.append(tokens[self.nr_of_inputs:])
+                mat_in.append(training_set[batch][:self.nr_of_inputs])
+                mat_out.append(training_set[batch][self.nr_of_inputs:])
             self.sess.run(self.step, feed_dict = {self.input: mat_in, self.output: mat_out})
+            #print(self.sess.run(self.actual_out, feed_dict = {self.input: mat_in, self.output: mat_out}))
+            #print(self.sess.run(self.output, feed_dict = {self.input: mat_in, self.output: mat_out}))
 
     def propagate(self, input):
-        return self.sess.run(self.actual_out, feed_dict = {self.input: input})
+        return self.sess.run(self.actual_out, feed_dict = {self.input: input})[0]
 
     def save_to_file(self, name):
         saver = tf.train.Saver()
         saver.save(self.sess, name)
 
     def print_net(self):
+        print("Weights:")
         for w in self.weights:
             print(self.sess.run(w))
             print()
+        print("Biases:")
         for b in self.biases:
             print(self.sess.run(b))
             print()
