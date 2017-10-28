@@ -4,6 +4,12 @@ import math
 import tensorflow as tf
 from random import shuffle
 
+def normalise(vector):
+    float_vector = list(map(float, vector))
+    square = math.sqrt(sum(map(lambda x: x*x, float_vector)))
+    new_vector = map(lambda x: x / square, float_vector)
+    return list(new_vector)
+
 class Net:
     weights = []
     biases = []
@@ -20,6 +26,7 @@ class Net:
         self.init_propagate_step()
 
     def weights_from_file(self, file):
+        self.random_weights()
         self.sess = tf.Session()
         saver = tf.train.Saver()
         saver.restore(self.sess, file)
@@ -59,6 +66,12 @@ class Net:
 
     def train(self, training_set):
         shuffle(training_set)
+        for i in range(0, len(training_set)):
+            l = training_set[i]
+            inputs_set = normalise(l[:self.nr_of_inputs])
+            outputs_set = normalise(l[self.nr_of_inputs:])
+            training_set[i] = inputs_set + outputs_set
+
         for i in range(0, len(training_set), self.batch_size):
             mat_in = []
             mat_out = []
@@ -70,6 +83,7 @@ class Net:
             #print(self.sess.run(self.output, feed_dict = {self.input: mat_in, self.output: mat_out}))
 
     def propagate(self, input):
+        input[0] = normalise(input[0])
         return self.sess.run(self.actual_out, feed_dict = {self.input: input})[0]
 
     def save_to_file(self, name):
