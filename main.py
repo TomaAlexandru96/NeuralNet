@@ -28,7 +28,7 @@ if (sys.argv[1] == "train"):
             data.append(list(map(lambda x: float(x), line_data)))
     train(n, data)
 elif (sys.argv[1] == "solve"):
-    data = [[float(sys.argv[i]) for i in range(2, 2+inputs+1)]]
+    data = [[float(sys.argv[i]) for i in range(2, 2+inputs)]]
     n.weights_from_file(save_file)
     res = n.propagate(data)
     print(res)
