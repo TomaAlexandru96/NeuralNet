@@ -5,10 +5,11 @@ import tensorflow as tf
 from random import shuffle
 
 def normalise(vector):
-    float_vector = list(map(float, vector))
-    square = math.sqrt(sum(map(lambda x: x*x, float_vector)))
-    new_vector = map(lambda x: x / square, float_vector)
-    return list(new_vector)
+    return vector
+    #float_vector = list(map(float, vector))
+    #square = math.sqrt(sum(map(lambda x: x*x, float_vector)))
+    #new_vector = map(lambda x: x / square, float_vector)
+    #return list(new_vector)
 
 class Net:
     weights = []
@@ -40,15 +41,15 @@ class Net:
             add_bias_weight(self.neurons_per_layer, self.neurons_per_layer)
         add_bias_weight(self.neurons_per_layer, self.nr_of_outputs)
 
-    def normalise(self, tensor):
-        return tf.divide(tensor, tf.norm(tensor))
+    #def normalise(self, tensor):
+    #    return tf.divide(tensor, tf.norm(tensor))
 
     def init_propagate_step(self):
         self.input = tf.placeholder(tf.float32, [None, self.nr_of_inputs])
         self.output = tf.placeholder(tf.float32, [None, self.nr_of_outputs])
 
-        self.input = self.normalise(self.input)
-        self.output = self.normalise(self.output)
+        #self.input = self.normalise(self.input)
+        #self.output = self.normalise(self.output)
 
         self.actual_out = self.input
 

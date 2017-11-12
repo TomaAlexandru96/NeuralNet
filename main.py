@@ -16,15 +16,15 @@ def train(net, data):
     net.print_net()
 
 # Net(hidden_layers, nr_of_neurons_per_layer, inputs, outputs, batch)
-inputs = 3
-outputs = 2
+inputs = 5
+outputs = 3
 n = Net(1, 10, inputs, outputs, 10)
 
 if (sys.argv[1] == "train"):
     data = []
     with open(data_file) as f:
         for line in f.readlines():
-            line_data = line.strip().split(" ")
+            line_data = line.strip().split("\t")
             data.append(list(map(lambda x: float(x), line_data)))
     train(n, data)
 elif (sys.argv[1] == "solve"):
